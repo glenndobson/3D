@@ -2,7 +2,7 @@
 -- DBMS Name       : SqlServer 2005
 -- Script Name     : daily_date_roll.sql
 -- Description     : Rolls current_day_details table and time flags
--- Author          : WhereScape
+-- Author          : Glenn Dobson
 -- Date            : 22 January 2002
 -- WhereScape Limited, inc. All rights reserved. (C) Copyright 1996-2019
 -- =============================================================================
