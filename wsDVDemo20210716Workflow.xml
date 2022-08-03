@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="http://www.wherescape.com/xml/Workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wherescape.com/xml/Workflow workflow_1.xsd">
+  <xml_version>1</xml_version>
+  <name>Test</name>
+  <button name="Workflow Test">
+    <button_desc>Test</button_desc>
+    <button_icon>model.png</button_icon>
+    <button_type>WhereScape default</button_type>
+    <button_value>Document model</button_value>
+  </button>
+</workflow>
+
