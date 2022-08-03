@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source_system xmlns="http://www.wherescape.com/xml/3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wherescape.com/xml/3D ./source_system_41.xsd">
+  <xml_version>41</xml_version>
+  <structure>
+    <tables />
+    <relations />
+    <transformations>
+      <transformation name="ws3d_rvls - Housekeeping">
+        <version>1.0</version>
+        <description>Tidy up any attribute properties that don't need to be sent to WhereScape RED</description>
+        <properties />
+        <rules>
+          <rule name="Delete Temp Keys" type="delete-column" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the temporary key attributes that were created to help join the DV entities together</rule_description>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-type">Load</rule_attribute>
+                <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+              </rule>
+              <rule_attribute name="column-type">MCTemp_Key</rule_attribute>
+            </rule>
+          </rule>
+          <rule name="Clean PK on Load and Stage" type="set-data-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the Primary key property off attributes in the Load and Stage entities</rule_description>
+            <rule_attribute name="active-old-data-type">F</rule_attribute>
+            <rule_attribute name="active-old-size">F</rule_attribute>
+            <rule_attribute name="active-old-scale">F</rule_attribute>
+            <rule_attribute name="active-old-default-value">F</rule_attribute>
+            <rule_attribute name="active-old-charset">F</rule_attribute>
+            <rule_attribute name="active-old-pk">T</rule_attribute>
+            <rule_attribute name="old-pk">T</rule_attribute>
+            <rule_attribute name="active-old-auto-inc">F</rule_attribute>
+            <rule_attribute name="active-old-unique">F</rule_attribute>
+            <rule_attribute name="active-old-nullable">F</rule_attribute>
+            <rule_attribute name="active-old-fk">F</rule_attribute>
+            <rule_attribute name="active-new-data-type">F</rule_attribute>
+            <rule_attribute name="active-new-size">F</rule_attribute>
+            <rule_attribute name="active-new-scale">F</rule_attribute>
+            <rule_attribute name="active-new-default-value">F</rule_attribute>
+            <rule_attribute name="active-new-charset">F</rule_attribute>
+            <rule_attribute name="active-new-pk">T</rule_attribute>
+            <rule_attribute name="new-pk">F</rule_attribute>
+            <rule_attribute name="active-new-auto-inc">F</rule_attribute>
+            <rule_attribute name="active-new-unique">F</rule_attribute>
+            <rule_attribute name="active-new-nullable">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-type">Load</rule_attribute>
+                <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+              </rule>
+              <rule_attribute name="column-name">%</rule_attribute>
+              <rule_attribute name="column-name-case-sensitive">F</rule_attribute>
+            </rule>
+          </rule>
+          <rule name="Remove unwanted auto increments off attributes" type="set-data-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the auto-increment property off attributes</rule_description>
+            <rule_attribute name="active-old-data-type">F</rule_attribute>
+            <rule_attribute name="active-old-size">F</rule_attribute>
+            <rule_attribute name="active-old-scale">F</rule_attribute>
+            <rule_attribute name="active-old-default-value">F</rule_attribute>
+            <rule_attribute name="active-old-charset">F</rule_attribute>
+            <rule_attribute name="active-old-pk">F</rule_attribute>
+            <rule_attribute name="active-old-auto-inc">T</rule_attribute>
+            <rule_attribute name="old-auto-inc">T</rule_attribute>
+            <rule_attribute name="active-old-unique">F</rule_attribute>
+            <rule_attribute name="active-old-nullable">F</rule_attribute>
+            <rule_attribute name="active-old-fk">F</rule_attribute>
+            <rule_attribute name="active-new-data-type">F</rule_attribute>
+            <rule_attribute name="active-new-size">F</rule_attribute>
+            <rule_attribute name="active-new-scale">F</rule_attribute>
+            <rule_attribute name="active-new-default-value">F</rule_attribute>
+            <rule_attribute name="active-new-charset">F</rule_attribute>
+            <rule_attribute name="active-new-pk">F</rule_attribute>
+            <rule_attribute name="active-new-auto-inc">T</rule_attribute>
+            <rule_attribute name="new-auto-inc">F</rule_attribute>
+            <rule_attribute name="active-new-unique">F</rule_attribute>
+            <rule_attribute name="active-new-nullable">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="column-property">Auto Increment</rule_attribute>
+            </rule>
+          </rule>
+          <rule name="Clean attribute types on Load and Stage" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the attribute types of Business key and Changing attribute off attributes in the Load and Stage entities</rule_description>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">T</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-type">Load</rule_attribute>
+                <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+              </rule>
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="column-type">Business key</rule_attribute>
+                <rule_attribute name="column-type">Link dependent child</rule_attribute>
+                <rule_attribute name="column-type">Changing attribute</rule_attribute>
+                <rule_attribute name="column-type">Satellite multi-active key</rule_attribute>
+                <rule_attribute name="column-type">Multi-active satellite sequence attribute</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Change the solo BK to Hub hash key on Satellites" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Temporary solution for Reference and Code Satellites
+This is to resolve generating the correct update procedure in WhereScape RED</rule_description>
+            <rule_attribute name="add-column-type">Hub hash key</rule_attribute>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Satellite</rule_attribute>
+              <rule_attribute name="column-type">Business key</rule_attribute>
+              <rule type="logic-negate-group" value="Or" stopped="false">
+                <rule_attribute name="table-column-type">Hub hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Link hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Surrogate key</rule_attribute>
+                <rule_attribute name="table-column-type">Hub surrogate key</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Change the Multi-active sequences to Business key on Satellites" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Set to an attribute type that will transfer to WhereScape RED
+However, there are currently issues supporting this in WhereScape RED</rule_description>
+            <rule_attribute name="add-column-type">Business key</rule_attribute>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Satellite</rule_attribute>
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="column-type">Satellite multi-active key</rule_attribute>
+                <rule_attribute name="column-type">Multi-active satellite sequence attribute</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Clean attribute types on DV Objects" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the attribute types of Changing attribute off attributes in the Hub, Link and Satellite entities</rule_description>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">T</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-type">Hub</rule_attribute>
+                <rule_attribute name="table-type">Link</rule_attribute>
+                <rule_attribute name="table-type">Satellite</rule_attribute>
+                <rule_attribute name="table-type">Reference</rule_attribute>
+                <rule_attribute name="table-type">Code</rule_attribute>
+              </rule>
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="column-type">Changing attribute</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Set attribute properties on Load, Stage and Satellite entities" type="set-data-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Set all non-typed attributes in Load, Stage and Satellite entities to have property values that will not cause data loading issues</rule_description>
+            <rule_attribute name="active-old-data-type">F</rule_attribute>
+            <rule_attribute name="active-old-size">F</rule_attribute>
+            <rule_attribute name="active-old-scale">F</rule_attribute>
+            <rule_attribute name="active-old-default-value">F</rule_attribute>
+            <rule_attribute name="active-old-charset">F</rule_attribute>
+            <rule_attribute name="active-old-pk">F</rule_attribute>
+            <rule_attribute name="active-old-auto-inc">F</rule_attribute>
+            <rule_attribute name="active-old-unique">F</rule_attribute>
+            <rule_attribute name="active-old-nullable">F</rule_attribute>
+            <rule_attribute name="active-old-fk">F</rule_attribute>
+            <rule_attribute name="active-new-data-type">F</rule_attribute>
+            <rule_attribute name="active-new-size">F</rule_attribute>
+            <rule_attribute name="active-new-scale">F</rule_attribute>
+            <rule_attribute name="active-new-default-value">T</rule_attribute>
+            <rule_attribute name="new-default-value"></rule_attribute>
+            <rule_attribute name="active-new-charset">F</rule_attribute>
+            <rule_attribute name="active-new-pk">T</rule_attribute>
+            <rule_attribute name="new-pk">F</rule_attribute>
+            <rule_attribute name="active-new-auto-inc">T</rule_attribute>
+            <rule_attribute name="new-auto-inc">F</rule_attribute>
+            <rule_attribute name="active-new-unique">T</rule_attribute>
+            <rule_attribute name="new-unique">F</rule_attribute>
+            <rule_attribute name="active-new-nullable">T</rule_attribute>
+            <rule_attribute name="new-nullable">T</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-type">Load</rule_attribute>
+                <rule_attribute name="table-type">Satellite</rule_attribute>
+                <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+              </rule>
+              <rule_attribute name="column-name">%</rule_attribute>
+              <rule_attribute name="column-name-case-sensitive">F</rule_attribute>
+              <rule_attribute name="no-column-type">T</rule_attribute>
+            </rule>
+          </rule>
+          <rule name="Delete any stage attributes that have no sources and data transformations" type="delete-column" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove any attributes with no sources and data transformations off the Stage entities</rule_description>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+              <rule_attribute name="no-column-type">T</rule_attribute>
+              <rule_attribute name="custom-template-attribute-expression">{%- set toDelete = ((column.sourceColumns | length) == 0) -%}
+{%- if toDelete-%}
+    {%- set toDelete = ((column.dataTransformations | length) == 0) -%}
+{%- endif -%}
+{{- toDelete -}}</rule_attribute>
+            </rule>
+          </rule>
+          <rule name="Delete Business keys from Links" type="delete-column" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Remove the Business keys off the Links</rule_description>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Link</rule_attribute>
+              <rule_attribute name="column-type">Business key</rule_attribute>
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-column-type">Link hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Hub hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Surrogate key</rule_attribute>
+                <rule_attribute name="table-column-type">Hub surrogate key</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Clear Link dependent child attribute types off Links" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>In a non-business key flavored Data Vault, the dependent children do not need to be marked as Business key
+Leaving it in will cause issues with indexes in WhereScape RED</rule_description>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Link</rule_attribute>
+              <rule_attribute name="column-type">Link dependent child</rule_attribute>
+              <rule type="logic-group" value="Or" stopped="false">
+                <rule_attribute name="table-column-type">Link hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Surrogate key</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Set Link dependent child attributes to Business key" type="assign-column-type" enabled="true" snapshot="false" stopped="false">
+            <rule_description>In a business key flavored Data Vault, the dependent children should be marked as Business key</rule_description>
+            <rule_attribute name="add-column-type">Business key</rule_attribute>
+            <rule_attribute name="remove-matched-column-types">T</rule_attribute>
+            <rule_attribute name="remove-other-column-types">F</rule_attribute>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Link</rule_attribute>
+              <rule_attribute name="column-type">Link dependent child</rule_attribute>
+              <rule type="logic-negate-group" value="Or" stopped="false">
+                <rule_attribute name="table-column-type">Link hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Hub hash key</rule_attribute>
+                <rule_attribute name="table-column-type">Surrogate key</rule_attribute>
+                <rule_attribute name="table-column-type">Hub surrogate key</rule_attribute>
+              </rule>
+            </rule>
+          </rule>
+          <rule name="Reorder Stage attributes" type="reorder-columns" enabled="true" snapshot="false" stopped="false">
+            <rule_description>Reorder attributes in Stage entities</rule_description>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="column-type">Link hash key</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="column-type">Hub hash key</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="column-type">Surrogate key</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="column-type">Hub surrogate key</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="column-type">Business key</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">OTHER</rule_attribute>
+              <rule_attribute name="column-type"></rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">COLUMN_TYPE</rule_attribute>
+              <rule_attribute name="column-type">Change hash key</rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+            </rule>
+            <rule type="reorder-columns-order" stopped="false">
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+              <rule_attribute name="type-of-column">GENERATED</rule_attribute>
+              <rule_attribute name="column-type"></rule_attribute>
+              <rule_attribute name="type-column-order">AsIs</rule_attribute>
+            </rule>
+            <rule type="match-logic-on" value="And" stopped="false">
+              <rule_attribute name="table-type">Stage-Data Vault Stage</rule_attribute>
+            </rule>
+          </rule>
+        </rules>
+        <validation></validation>
+      </transformation>
+    </transformations>
+  </structure>
+</source_system>
+
